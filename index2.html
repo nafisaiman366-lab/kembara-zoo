@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kembara Zoo - Cikgu Nafis</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0b3b3a; --canopy:#14573f; --leaf:#2f8f4e;
+  --sun:#f4a640; --coral:#e8603c; --cream:#fbf1d6; --bark:#4a2c17; --wood:#8a5a2b;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  font-family:'Baloo 2','Trebuchet MS',Arial,sans-serif;
+  color:var(--cream);overflow:hidden;position:relative;
+  background:linear-gradient(180deg,#f4a640 0%,#e8603c 22%,#7a3b4a 42%,var(--night) 75%,#072524 100%);
+  display:flex;justify-content:center;
+}
+/* matahari terbenam */
+.sun{position:absolute;left:50%;top:6%;width:220px;height:220px;margin-left:-110px;border-radius:50%;
+  background:radial-gradient(circle,#ffe29a 0%,#f9b84e 55%,rgba(249,184,78,0) 72%);opacity:.8}
+/* siluet daun berlapis */
+.sil{position:absolute;left:0;right:0;bottom:0;width:100%;height:34%;pointer-events:none}
+.back{fill:#0f4a3a}.mid{fill:#0a3a2e}.front{fill:#06281f}
+.sway{transform-origin:50% 100%;animation:sway 6s ease-in-out infinite}
+.sway.b{animation-delay:-3s}
+@keyframes sway{50%{transform:rotate(1.2deg) translateX(6px)}}
+.vines{position:absolute;left:0;right:0;top:0;width:100%;height:30%;pointer-events:none}
+.vines path{fill:none;stroke:#0a3a2e;stroke-width:9;stroke-linecap:round}
+.vines ellipse{fill:#14573f}
+/* kelip-kelip */
+.fly{position:absolute;width:7px;height:7px;border-radius:50%;background:#ffe29a;
+  box-shadow:0 0 12px 4px rgba(255,226,154,.8);animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translate(16px,-24px);opacity:.25}}
+
+.stage{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;
+  width:100%;max-width:560px;padding:10px 16px 14px;text-align:center;gap:10px;overflow-y:auto}
+
+/* papan tanda kayu */
+.sign{position:relative;margin-top:6px;padding:6px 30px 8px;border-radius:14px;
+  background:repeating-linear-gradient(90deg,var(--wood) 0 22px,#7b4f25 22px 24px);
+  border:4px solid var(--bark);box-shadow:0 5px 0 var(--bark);
+  animation:hang 5s ease-in-out infinite;transform-origin:50% -20px}
+.sign h1{font-size:clamp(24px,6vw,34px);font-weight:700;line-height:1.1;color:var(--cream);
+  text-shadow:0 3px 0 var(--bark);letter-spacing:.5px}
+.sign small{display:block;font-size:14px;color:#ffe9b8;margin-top:-2px}
+.sign::before,.sign::after{content:"";position:absolute;top:-22px;width:4px;height:22px;background:#d9b777}
+.sign::before{left:22px}.sign::after{right:22px}
+@keyframes hang{50%{transform:rotate(-1.2deg)}}
+
+/* gambar profil dalam gerbang */
+.gate-wrap{position:relative;width:200px;height:250px;margin:6px 0 2px}
+.ring{position:absolute;inset:0;border-radius:999px 999px 26px 26px;border:4px solid var(--sun);
+  opacity:0;pointer-events:none}
+.playing .ring{animation:wave 2.1s ease-out infinite}
+.playing .ring:nth-child(2){animation-delay:.7s}
+.playing .ring:nth-child(3){animation-delay:1.4s}
+@keyframes wave{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.55);opacity:0}}
+.avatar{position:relative;width:100%;height:100%;padding:0;cursor:pointer;overflow:hidden;
+  border-radius:999px 999px 26px 26px;border:8px solid var(--bark);background:var(--canopy);
+  box-shadow:0 0 0 5px var(--sun),0 16px 30px rgba(0,0,0,.5);transition:transform .2s;
+  animation:bob 3.4s ease-in-out infinite}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar:hover{transform:scale(1.04)}
+.avatar:focus-visible{outline:4px solid #fff;outline-offset:8px}
+.playing .avatar{animation:talk .55s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes talk{50%{transform:scale(1.035) rotate(-.8deg)}}
+.hint{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;
+  background:var(--sun);color:var(--bark);font-weight:700;font-size:15px;padding:4px 16px;
+  border-radius:20px;white-space:nowrap;box-shadow:0 3px 0 var(--bark)}
+.playing .hint{display:none}
+
+/* bar suara */
+.eq{display:flex;gap:5px;align-items:flex-end;height:26px;margin-top:4px;opacity:.35;transition:opacity .3s}
+.eq i{width:7px;height:5px;border-radius:4px;background:var(--sun)}
+.playing .eq{opacity:1}
+.playing .eq i{animation:bar .9s ease-in-out infinite}
+.eq i:nth-child(2n){animation-delay:-.3s!important}
+.eq i:nth-child(3n){animation-delay:-.6s!important}
+.eq i:nth-child(5n){animation-delay:-.15s!important}
+@keyframes bar{0%,100%{height:5px}50%{height:26px}}
+
+/* ayat pada gulungan */
+.bubble{background:var(--cream);color:#33220f;border-radius:10px 24px 10px 24px;padding:12px 18px;
+  font-size:clamp(15px,3.6vw,18px);line-height:1.5;font-weight:500;max-width:520px;
+  border:3px solid var(--bark);box-shadow:0 5px 0 var(--bark)}
+.w{padding:0 2px;border-radius:5px;transition:background .15s,color .15s}
+.w.on{background:var(--coral);color:#fff}
+
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button.b{font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;border:0;
+  border-radius:12px;padding:8px 22px;color:var(--cream);background:var(--coral);
+  box-shadow:0 4px 0 #9c3a1f;transition:transform .1s,box-shadow .1s}
+button.alt{background:var(--leaf);box-shadow:0 4px 0 #1d5e33}
+button.b:active{transform:translateY(3px);box-shadow:0 1px 0 var(--bark)}
+button.b:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.msg{font-size:14px;background:rgba(0,0,0,.45);border-radius:12px;padding:8px 12px;display:none;width:100%}
+.msg a{color:var(--sun)}
+
+@media (max-height:640px){.gate-wrap{width:150px;height:187px}.sun{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+
+<div class="sun"></div>
+
+<svg class="vines" viewBox="0 0 800 160" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M60 0 C 50 50, 90 80, 70 150"/><path d="M140 0 C 150 40, 120 70, 135 110"/>
+  <path d="M740 0 C 750 55, 710 85, 730 150"/><path d="M660 0 C 650 40, 680 70, 665 110"/>
+  <ellipse cx="70" cy="150" rx="16" ry="9" transform="rotate(-30 70 150)"/>
+  <ellipse cx="135" cy="110" rx="13" ry="7" transform="rotate(20 135 110)"/>
+  <ellipse cx="730" cy="150" rx="16" ry="9" transform="rotate(30 730 150)"/>
+  <ellipse cx="665" cy="110" rx="13" ry="7" transform="rotate(-20 665 110)"/>
+</svg>
+
+<svg class="sil" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true">
+  <g class="sway"><path class="back" d="M0 220V120Q40 40 90 110Q120 20 175 105Q230 30 270 115Q330 50 380 120Q430 10 490 110Q540 40 590 115Q650 30 700 110Q760 50 800 120V220Z"/></g>
+  <g class="sway b"><path class="mid" d="M0 220V150Q50 90 100 150Q150 80 210 150Q270 100 330 155Q400 90 460 155Q530 95 600 155Q670 100 730 150Q780 120 800 150V220Z"/></g>
+  <path class="front" d="M0 220V185Q60 150 120 190Q190 140 260 190Q340 150 420 195Q500 145 580 190Q660 150 730 190Q780 170 800 185V220Z"/>
+</svg>
+
+<div class="fly" style="left:18%;top:42%"></div>
+<div class="fly" style="left:80%;top:36%;animation-delay:-2s"></div>
+<div class="fly" style="left:10%;top:66%;animation-delay:-4s"></div>
+<div class="fly" style="left:88%;top:62%;animation-delay:-1s"></div>
+
+<main class="stage" id="stage">
+  <div class="sign"><h1>Kembara Zoo</h1><small>Klik gambar Cikgu untuk dengar sapaan</small></div>
+
+  <div class="gate-wrap">
+    <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+    <button class="avatar" id="avatar" aria-label="Main sapaan Cikgu Nafis">
+      <img id="pic" alt="Cikgu Nafis">
+    </button>
+    <span class="hint">▶ Tekan sini</span>
+  </div>
+
+  <div class="eq" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
+
+  <div class="bubble" id="bubble" aria-live="polite"></div>
+
+  <div class="btns">
+    <button class="b" id="play">▶ Main</button>
+    <button class="b alt" id="again">🔁 Ulang</button>
+  </div>
+  <div class="msg" id="msg">Suara tidak dapat dimainkan. Semak fail suara.mp3 dalam GitHub, kemudian cuba lagi.</div>
+</main>
+
+<audio id="aud" preload="auto"></audio>
+
+<script>
+(function(){
+  var IMAGE_ID = "1h0KaA4xBphHArqq3VkBdXcX-tVDEWr_l";
+  /* Fail yang dihos bersama halaman ini di GitHub Pages */
+  var IMAGE_DATA = "gambar.jpg";
+  var AUDIO_FILE = "suara.mp3";
+  var TEXT = "Hai murid-murid! Selamat datang ke Kembara Zoo. Saya Cikgu Nafis. " +
+    "Jom teroka zoo yang menakjubkan ini bersama cikgu! " +
+    "Kita akan belajar banyak perkara baharu tau. " +
+    "Murid-murid dah bersedia? Jom!";
+
+  var stage = document.getElementById('stage');
+  var aud = document.getElementById('aud');
+  var pic = document.getElementById('pic');
+  var bubble = document.getElementById('bubble');
+  var msg = document.getElementById('msg');
+  var playBtn = document.getElementById('play');
+
+  var imgUrls = [
+    "https://lh3.googleusercontent.com/d/" + IMAGE_ID + "=w800",
+    "https://drive.google.com/thumbnail?id=" + IMAGE_ID + "&sz=w800",
+    "https://drive.google.com/uc?export=view&id=" + IMAGE_ID
+  ];
+  var i = 0;
+  pic.onerror = function(){
+    if (++i < imgUrls.length) { pic.src = imgUrls[i]; return; }
+    pic.style.display = 'none';
+    var f = document.createElement('iframe');
+    f.src = "https://drive.google.com/file/d/" + IMAGE_ID + "/preview";
+    f.style.cssText = "width:100%;height:100%;border:0;pointer-events:none;transform:scale(1.15)";
+    document.getElementById('avatar').appendChild(f);
+  };
+  if (IMAGE_DATA) { imgUrls = [IMAGE_DATA].concat(imgUrls); }
+  pic.src = imgUrls[0];
+
+  aud.src = AUDIO_FILE;
+  function showError(){ msg.style.display = 'block'; stop(true); }
+  aud.addEventListener('error', showError);
+
+  var words = TEXT.split(' ');
+  var spans = [], cum = [], total = 0;
+  words.forEach(function(w, k){
+    var s = document.createElement('span');
+    s.className = 'w'; s.textContent = w;
+    bubble.appendChild(s);
+    if (k < words.length - 1) bubble.appendChild(document.createTextNode(' '));
+    spans.push(s);
+    total += w.length + 1; cum.push(total);
+  });
+
+  function highlight(){
+    var d = aud.duration;
+    if (!d || !isFinite(d)) return;
+    var p = aud.currentTime / d * total, n = 0;
+    while (n < cum.length - 1 && cum[n] < p) n++;
+    spans.forEach(function(s, k){ s.classList.toggle('on', k === n); });
+  }
+  function clearHighlight(){ spans.forEach(function(s){ s.classList.remove('on'); }); }
+
+  function stop(reset){
+    aud.pause();
+    stage.classList.remove('playing');
+    playBtn.textContent = '▶ Main';
+    if (reset) { aud.currentTime = 0; clearHighlight(); }
+  }
+  function play(){
+    msg.style.display = 'none';
+    var r = aud.play();
+    if (r && r.catch) r.catch(showError);
+  }
+
+  aud.addEventListener('play', function(){
+    stage.classList.add('playing'); playBtn.textContent = '⏸ Jeda';
+  });
+  aud.addEventListener('timeupdate', highlight);
+  aud.addEventListener('ended', function(){ stop(true); });
+
+  function toggle(){ aud.paused ? play() : stop(false); }
+  document.getElementById('avatar').addEventListener('click', toggle);
+  playBtn.addEventListener('click', toggle);
+  document.getElementById('again').addEventListener('click', function(){
+    aud.currentTime = 0; clearHighlight(); play();
+  });
+})();
+</script>
+</body>
+</html>
